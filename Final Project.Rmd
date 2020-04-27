@@ -1,6 +1,7 @@
 ---
 <<<<<<< HEAD
-title: "R Notebook"
+title: "COVID-19 pandemic"
+authors: "Jesse Bragger, Sam Cavalli, Matt Lawson, Jett Vernaci"
 output: html_notebook
 ---
 ## DCM 
@@ -9,9 +10,7 @@ output: html_notebook
 #install.packages('EpiModel')
 library(EpiModel)
 
-title: "COVID-19 pandemic"
-authors: "Jesse Bragger, Sam Cavalli, Matt Lawson, Jett Vernaci"
-output: html_notebook
+
 ---
 ## DCM
 ```{r}
