@@ -10,4 +10,99 @@ output: html_notebook
 #library(EpiModel)
 ```
 
+# Basic SI Model Tutorial
+
+## Model Building
+
+```{r}
+param <- param.dcm(inf.prob = 0.2, act.rate= 0.25) # parameters
+init <- init.dcm(s.num = 500, i.num = 1) # collects initial conditions
+control <- control.dcm(type="SI", nsteps = 500) # collects structural model controls 
+
+model <-dcm(param,init,control) # run the model
+model
+```
+two compartments and one flow are available. Compartments are discrete disease states and flows are the transitions between states. The i.num compartment is the size of the infected population at each of the time steps. si.flow is the number of people movng from S to I at each time step. i.num is disease prevalence and si.flow is disease incidence. 
+
+## Plot
+
+```{r}
+plot(model)
+```
+
+## Summary
+
+```{r}
+summary(model, at=150)
+```
+
+Disease incidence is 4.31 new infections
+
+# SIR Model with Demography Tutorial
+
+## Model
+
+```{r}
+param.sir <- param.dcm(inf.prob = 0.2, act.rate=1, rec.rate=1/20, a.rate = 1/95,ds.rate=1/100,di.rate=1/80,dr.rate = 1/100)
+
+init.sir <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
+control.sir <- control.dcm(type="SIR", nsteps = 500, dt=0.5)
+
+model.sir <- dcm(param.sir,init.sir,control.sir)
+model.sir
+```
+
+## Plot
+
+```{r}
+par(mar = c(3.2,3,2,1), mgp=c(2,1,0), mfrow=c(1,2))
+plot(model.sir, popfrac = FALSE, alpha = 0.5, lwd = 4, main= "Compartment Sizes")
+plot(model.sir, y= "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n")
+
+```
+
+## Summaries
+
+```{r}
+par(mfrow = c(1,1))
+comp_plot(model.sir, at= 50, digits=1)
+```
+
+# Basic ICMs Tutorial
+
+## SI Model Stochasticity
+
+```{r}
+param.si.icm <- param.icm(inf.prob = 0.2, act.rate = 0.25)
+init.si.icm <- init.icm(s.num = 500, i.num = 1)
+control.si.icm <- control.icm(type="SI", nsims = 10 ,nsteps = 300)
+model.si.icm <- icm(param.si.icm,init.si.icm, control.si.icm)
+model.si.icm
+```
+
+## Summaries
+
+```{r}
+summary(model.si.icm, at= 125)
+```
+
+```{r}
+head(as.data.frame(model.si.icm, out="mean"))
+```
+
+```{r}
+tail(as.data.frame(model.si.icm, out="vals", sim=1))
+```
+
+## Plotting
+
+```{r}
+plot(model.si.icm)
+```
+
+# Investigsting Simulated Outbreaks (Number 4)
+
+```{r}
+read.csv(US_MAP_DATA)
+```
 
