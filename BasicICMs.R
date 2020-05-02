@@ -1,66 +1,3 @@
----
-<<<<<<< HEAD
-title: "COVID-19 pandemic"
-authors: "Jesse Bragger, Sam Cavalli, Matt Lawson, Jett Vernaci"
-output: html_notebook
----
-## DCM 
-
-
-#install.packages('EpiModel')
-library(EpiModel)
-
-
----
-## DCM
-```{r}
-## ----setup, include = FALSE----------------------------------------------
-install.packages(knitr)
-install.packages(EpiModel)
-library(knitr)
-library(EpiModel)
-opts_chunk$set(comment = NA, message = FALSE, tidy = FALSE)
-
-## ----dcmSi1--------------------------------------------------------------
-param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
-init <- init.dcm(s.num = 500, i.num = 1)
-control <- control.dcm(type = "SI", nsteps = 500)
-
-## ----dcmSi2--------------------------------------------------------------
-mod <- dcm(param, init, control)
-
-## ----dcmSiPrint----------------------------------------------------------
-mod
-
-## ----dcmSiPlot-----------------------------------------------------------
-plot(mod)
-
-## ----dcmSiSumm-----------------------------------------------------------
-summary(mod, at = 150)
-
-## ----dcmSir--------------------------------------------------------------
-param <- param.dcm(inf.prob = 0.2, act.rate = 1, rec.rate = 1/20,
-                   a.rate = 1/95, ds.rate = 1/100, di.rate = 1/80, dr.rate = 1/100)
-init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
-control <- control.dcm(type = "SIR", nsteps = 500, dt = 0.5)
-mod <- dcm(param, init, control)
-
-## ----dcmSirPlot, fig.height=4--------------------------------------------
-par(mar = c(3.2, 3, 2, 1), mgp = c(2, 1, 0), mfrow = c(1, 2))
-plot(mod, popfrac = FALSE, alpha = 0.5,
-     lwd = 4, main = "Compartment Sizes")
-plot(mod, y = "si.flow", lwd = 4, col = "firebrick",
-     main = "Disease Incidence", legend = "n")
-
-## ----dcmSirCPlot---------------------------------------------------------
-par(mfrow = c(1, 1))
-comp_plot(mod, at = 50, digits = 1)
-
-```
-
-## ICM
-
-```{r}
 ## ----setup, include=FALSE------------------------------------------------
 require(knitr)
 require(EpiModel)
@@ -146,12 +83,4 @@ plot(sim)
 plot(sim, y = c("i.num", "i.num.g2"), mean.lwd = 3, sim.lines = TRUE, 
      sim.col = c("steelblue", "firebrick"), legend = TRUE,
      main = "Disease Prevalence: Means and Individual Simulations")
-
-
->>>>>>> c18e498f874e4c368667fdd4e2e2d4957e23f98b
-```
-
-```{r}
-
-```
 
