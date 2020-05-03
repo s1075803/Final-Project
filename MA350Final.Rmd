@@ -7,7 +7,7 @@ output: html_notebook
 
 ```{r}
 #install.packages("EpiModel")
-#library(EpiModel)
+library(EpiModel)
 ```
 
 # Basic SI Model Tutorial
@@ -73,9 +73,9 @@ comp_plot(model.sir, at= 50, digits=1)
 ## SI Model Stochasticity
 
 ```{r}
-param.si.icm <- param.icm(inf.prob = 0.2, act.rate = 0.25)
-init.si.icm <- init.icm(s.num = 500, i.num = 1)
-control.si.icm <- control.icm(type="SI", nsims = 10 ,nsteps = 300)
+param.si.icm <- param.icm(inf.prob = 0.2, act.rate = 1, rec.rate = 1/20)
+init.si.icm <- init.icm(s.num = 500, i.num = 1, r.num = 0)
+control.si.icm <- control.icm(type="SIR", nsims = 10 ,nsteps = 300)
 model.si.icm <- icm(param.si.icm,init.si.icm, control.si.icm)
 model.si.icm
 ```
@@ -107,9 +107,9 @@ plot(model.si.icm)
 ### Model
 
 ```{r}
-param.ny <- param.dcm(inf.prob = 0.5, act.rate=2.2, rec.rate=0.97, a.rate = 0.014,ds.rate=0.008,di.rate=0.00123,dr.rate = 0.001)
+param.ny <- param.dcm(inf.prob = 0.7, act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0, di.rate=0.2, dr.rate = 0)
 
-init.ny <- init.dcm(s.num = 8,399,000, i.num = 1, r.num = 0)
+init.ny <- init.dcm(s.num = 8399000, i.num = 1, r.num = 0)
 control.ny <- control.dcm(type="SIR", nsteps = 500, dt=0.5)
 
 model.ny <- dcm(param.ny,init.ny,control.ny)
@@ -119,8 +119,36 @@ model.ny
 ### PLot
 
 ```{r}
-par(mar = c(3.2,3,2,1), mgp=c(2,1,0), mfrow=c(1,2))
+par(mar = c(3.2,3,2,1), mgp=c(3,1,0), mfrow=c(1,2))
 plot(model.ny, popfrac = FALSE, alpha = 0.5, lwd = 4, main= "Compartment Sizes")
-plot(model.ny, y= "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n")
+plot(model.ny, y = "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n")
 ```
 
+## Summaries
+
+```{r}
+par(mfrow = c(1,1))
+comp_plot(model.ny, at= 50, digits=1)
+```
+
+## ICM Model Stochasticity NYC
+
+```{r}
+param.icm.ny <- param.icm(inf.prob = 0.7, act.rate = 2.2, rec.rate = 1/14, di.rate = 0.2, a.rate = 0.014, dr.rate = 0, ds.rate = 0)
+init.icm.ny <- init.icm(s.num = 8399000, i.num = 1, r.num = 0)
+control.icm.ny <- control.icm(type="SIR", nsims = 10, nsteps = 500)
+model.icm.ny <- icm(param.icm.ny,init.icm.ny, control.icm.ny)
+model.icm.ny
+```
+
+## Summaries
+
+```{r}
+summary(model.icm.ny, at= 125)
+```
+
+## Plotting
+
+```{r}
+plot(model.icm.ny)
+```
