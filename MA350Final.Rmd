@@ -100,14 +100,18 @@ tail(as.data.frame(model.si.icm, out="vals", sim=1))
 plot(model.si.icm)
 ```
 
-# Investigsting Simulated Outbreaks (Number 4)
+# Problem 4: Investigsting Simulated Outbreaks 
 
 ## DCM
 
 ### Model
 
 ```{r}
+<<<<<<< HEAD
 param.ny <- param.dcm(inf.prob = 0.7, act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0, di.rate=0.2, dr.rate = 0)
+=======
+param.ny <- param.dcm(inf.prob = 0.7, act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+>>>>>>> 2d76c86752978cfe954dd24455dac4d04b2ea0d2
 
 init.ny <- init.dcm(s.num = 8399000, i.num = 1, r.num = 0)
 control.ny <- control.dcm(type="SIR", nsteps = 500, dt=0.5)
@@ -116,11 +120,12 @@ model.ny <- dcm(param.ny,init.ny,control.ny)
 model.ny
 ```
 
-### PLot
+### Plot
 
 ```{r}
 par(mar = c(3.2,3,2,1), mgp=c(3,1,0), mfrow=c(1,2))
 plot(model.ny, popfrac = FALSE, alpha = 0.5, lwd = 4, main= "Compartment Sizes")
+<<<<<<< HEAD
 plot(model.ny, y = "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n")
 ```
 
@@ -129,6 +134,39 @@ plot(model.ny, y = "si.flow", lwd = 4, col = "firebrick", main = "Disease Incide
 ```{r}
 par(mfrow = c(1,1))
 comp_plot(model.ny, at= 50, digits=1)
+=======
+plot(model.ny, y= "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n", ylab="SI Flow")
+```
+
+### Summary 
+
+```{r}
+summary(model.ny, at= 1)
+```
+
+# ICM
+
+## Model
+
+```{r}
+param.icm.ny <- param.icm(inf.prob = 0.7,rec.rate=1/14)
+init.icm.ny <- init.icm(s.num = 100000, i.num = 1, r.num = 0)
+control.icm.ny <- control.icm(type="SIR", nsims = 10,nsteps = 300)
+model.icm.ny <- icm(param.icm.ny,init.icm.ny, control.icm.ny)
+model.icm.ny
+```
+
+## Plot
+
+```{r}
+plot(model.icm.ny)
+```
+
+## Summary
+
+```{r}
+summary(model.icm.ny, at=125)
+>>>>>>> 2d76c86752978cfe954dd24455dac4d04b2ea0d2
 ```
 
 ## ICM Model Stochasticity NYC
