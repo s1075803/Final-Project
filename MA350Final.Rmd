@@ -127,7 +127,7 @@ plot(model.ny, y= "si.flow", lwd = 4, col = "firebrick", main = "Disease Inciden
 ### Summary 
 
 ```{r}
-summary(model.ny, at= 1)
+summary(model.ny, at= 150)
 ```
 
 # ICM
@@ -135,9 +135,10 @@ summary(model.ny, at= 1)
 ## Model
 
 ```{r}
-param.icm.ny <- param.icm(inf.prob = 0.7,rec.rate=1/14)
-init.icm.ny <- init.icm(s.num = 100000, i.num = 1, r.num = 0)
-control.icm.ny <- control.icm(type="SIR", nsims = 10,nsteps = 300)
+param.icm.ny <- param.icm(inf.prob = 0.7,act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+init.icm.ny <- init.icm(s.num = 124000, i.num = 1, r.num = 0)
+control.icm.ny <- control.icm(type="SIR", nsims = 2,nsteps = 300)
+
 model.icm.ny <- icm(param.icm.ny,init.icm.ny, control.icm.ny)
 model.icm.ny
 ```
@@ -154,3 +155,38 @@ plot(model.icm.ny)
 summary(model.icm.ny, at=125)
 ```
 
+# Problem 5
+
+```{r}
+param.icm.ny.2 <- param.icm(inf.prob = 0.7,act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+init.icm.ny.2 <- init.icm(s.num = 124000, i.num = 1, r.num = 0)
+control.icm.ny.2 <- control.icm(type="SIR", nsims = 2,nsteps = 300) 
+
+model.icm.ny.2 <- icm(param.icm.ny.2,init.icm.ny.2, control.icm.ny.2)
+model.icm.ny.2
+```
+
+
+# Problem 6
+
+Change the act rate to be low, since quarantine prevents interaction. Additionally, decrease the probability of infection since quarantine reduces the risk. 
+
+```{r}
+param.ny.intervention <- param.dcm(inf.prob = 0.5, act.rate=1, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+
+init.ny.intervention <- init.dcm(s.num = 8399000, i.num = 1, r.num = 0)
+control.ny.intervention <- control.dcm(type="SIR", nsteps = 500, dt=0.5)
+
+model.ny.intervention <- dcm(param.ny.intervention,init.ny.intervention,control.ny.intervention)
+model.ny.intervention
+```
+
+```{r}
+plot(model.ny.intervention)
+```
+
+```{r}
+summary(model.ny.intervention, at=150)
+```
+
+These samples are much smaller than the first DCM model because quarantine decreases the probability of infection and the act rate. 
