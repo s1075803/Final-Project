@@ -1,5 +1,6 @@
 ---
-title: "R Notebook"
+title: "MA 350 Final: EpiModel Package"
+author: "Sam, Jett, Matt, and Jesse"
 output: html_notebook
 ---
 
@@ -11,8 +12,6 @@ library(EpiModel)
 ```
 
 # Basic SI Model Tutorial
-
-## Model Building
 
 ```{r}
 param <- param.dcm(inf.prob = 0.2, act.rate= 0.25) # parameters
@@ -90,17 +89,22 @@ summary(model.si.icm, at= 125)
 head(as.data.frame(model.si.icm, out="mean"))
 ```
 
+First six time points.
+
 ```{r}
 tail(as.data.frame(model.si.icm, out="vals", sim=1))
 ```
+
+Last six time points.
 
 ## Plotting
 
 ```{r}
 plot(model.si.icm)
 ```
+Plot of all three compartments.
 
-# Problem 4: Investigsting Simulated Outbreaks 
+# Problem 4: Investigating Simulated Outbreaks 
 
 ## DCM
 
@@ -120,6 +124,8 @@ model.ny <- dcm(param.ny,init.ny,control.ny)
 model.ny
 ```
 
+DCM model built using rates and initial conditions. 
+
 ### Plot
 
 ```{r}
@@ -129,7 +135,7 @@ plot(model.ny, popfrac = FALSE, alpha = 0.5, lwd = 4, main= "Compartment Sizes")
 plot(model.ny, y = "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n")
 ```
 
-## Summaries
+Plot of the three compartments. 
 
 ```{r}
 par(mfrow = c(1,1))
@@ -138,70 +144,162 @@ comp_plot(model.ny, at= 50, digits=1)
 plot(model.ny, y= "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n", ylab="SI Flow")
 ```
 
-### Summary 
+Plot of disease incidence, S -> I
 
 ```{r}
-summary(model.ny, at= 150)
+summary(model.ny, at= 15)
 ```
+
+The total number of individuals in each compartment at a given time. Here, at time 15.
 
 # ICM
 
 ## Model
 
 ```{r}
+set.seed(1)
 param.icm.ny <- param.icm(inf.prob = 0.7,act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
-init.icm.ny <- init.icm(s.num = 124000, i.num = 1, r.num = 0)
-control.icm.ny <- control.icm(type="SIR", nsims = 2,nsteps = 300)
+init.icm.ny <- init.icm(s.num = 10000, i.num = 1, r.num = 0)
+control.icm.ny <- control.icm(type="SIR", nsims = 5,nsteps = 150)
 
 model.icm.ny <- icm(param.icm.ny,init.icm.ny, control.icm.ny)
 model.icm.ny
 ```
 
+ICM model simulated 5 times with a the number of susceptibles set to 10000. 
+
 ## Plot
 
 ```{r}
-plot(model.icm.ny)
+plot(model.icm.ny, xlab="Time",ylab= "Number of NYC Citizens", main="Compartment Sizes")
 ```
+
+Plot of the ICM model compartments. 
+
+```{r}
+plot(model.icm.ny, y = "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n", xlab="Time", ylab="Number of Citizens")
+```
+
+Plot of the disease incidence for the ICM model. 
 
 ## Summary
 
 ```{r}
-summary(model.icm.ny, at=125)
+summary(model.icm.ny, at=17) # infected peaks at time 17
 ```
 
+Summary of the mean, standard deviation, and percent per compartment for ICM at time 17 (the peak).
+
+```{r}
+summary(model.icm.ny, at=150)
+```
+
+Summary of the mean, standard deviation, and percent per compartment for ICM at time 150 (the last day).
+
+```{r}
+tail(as.data.frame(model.icm.ny, out="mean"))
+```
+
+The last time steps of the ICM model. Used to see how the pandemic subsided. 
 
 # Problem 5
 
+## Low infection probability 
+
 ```{r}
-param.icm.ny.2 <- param.icm(inf.prob = 0.7,act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
-init.icm.ny.2 <- init.icm(s.num = 124000, i.num = 1, r.num = 0)
-control.icm.ny.2 <- control.icm(type="SIR", nsims = 2,nsteps = 300) 
+set.seed(1)
+param.icm.ny.2 <- param.icm(inf.prob = 0.2,act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+init.icm.ny.2 <- init.icm(s.num = 10000, i.num = 1, r.num = 0)
+control.icm.ny.2 <- control.icm(type="SIR", nsims = 5,nsteps = 150) 
 
 model.icm.ny.2 <- icm(param.icm.ny.2,init.icm.ny.2, control.icm.ny.2)
 model.icm.ny.2
 ```
 
+Change the infection probability parameter to 0.2 to see how the model changes. 
 
-# Problem 6
+### Low infection probability plot
+
+```{r}
+plot(model.icm.ny.2)
+```
+
+Plot of the model using low infection probability.
+
+### Low infection probability summary
+
+```{r}
+summary(model.icm.ny.2, at=100) # infected peaks at 100
+```
+
+Summary of the model using low infection probability. 
+
+## High infection probability
+
+```{r}
+set.seed(1)
+param.icm.ny.3 <- param.icm(inf.prob = 0.9,act.rate=2.2, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+init.icm.ny.3 <- init.icm(s.num = 10000, i.num = 1, r.num = 0)
+control.icm.ny.3 <- control.icm(type="SIR", nsims = 5,nsteps = 150) 
+
+model.icm.ny.3 <- icm(param.icm.ny.3,init.icm.ny.3, control.icm.ny.3)
+model.icm.ny.3
+```
+
+Change the infection probability again, to be higher and see how the model changes. 
+
+### High infection probability plot
+
+```{r}
+plot(model.icm.ny.3)
+```
+
+Plot of the high infection probability. 
+
+### High infection probability summary
+
+```{r}
+summary(model.icm.ny.3, at=13)
+```
+
+Summary of the high infection probability. 
+
+# Problem 6: Government i=Intervention
 
 Change the act rate to be low, since quarantine prevents interaction. Additionally, decrease the probability of infection since quarantine reduces the risk. 
 
 ```{r}
-param.ny.intervention <- param.dcm(inf.prob = 0.5, act.rate=1, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
+param.ny.intervention <- param.dcm(inf.prob = 0.4, act.rate=1, rec.rate=1/14, a.rate = 0.014,ds.rate=0,di.rate=0.2,dr.rate = 0)
 
 init.ny.intervention <- init.dcm(s.num = 8399000, i.num = 1, r.num = 0)
-control.ny.intervention <- control.dcm(type="SIR", nsteps = 500, dt=0.5)
+control.ny.intervention <- control.dcm(type="SIR", nsteps = 200, dt=0.5)
 
 model.ny.intervention <- dcm(param.ny.intervention,init.ny.intervention,control.ny.intervention)
 model.ny.intervention
 ```
 
+Model built with parameter estimates varied to account for government intervention. 
+
+## Plot 
+
 ```{r}
-plot(model.ny.intervention)
+plot(model.ny.intervention, ylab="Number of NYC Citizens", xlab="Time", main="Compartment Sizes")
 ```
 
 ```{r}
-summary(model.ny.intervention, at=150)
+plot(model.ny.intervention, y= "si.flow", lwd = 4, col = "firebrick", main = "Disease Incidence", legend="n", ylab="SI Flow")
+```
+
+Plot of the pandemic under government intervention.
+
+## Summary 
+
+```{r}
+summary(model.ny.intervention, at=125.5)
+```
+
+```{r}
+summary(model.ny.intervention, at=499.5)
 ```
 
 These samples are much smaller than the first DCM model because quarantine decreases the probability of infection and the act rate. The number of susceptibles is higher and infected is lower. SI is also smaller, because incident rate is lower. 
