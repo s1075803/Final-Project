@@ -297,7 +297,7 @@ summary(model.ny.intervention, at=125.5)
 ```
 
 ```{r}
-summary(model.ny.intervention, at=499.5)
+summary(model.ny.intervention, at=199.5)
 ```
 
 These samples are much smaller than the first DCM model because quarantine decreases the probability of infection and the act rate. The number of susceptibles is higher and infected is lower. SI is also smaller, because incident rate is lower. 
